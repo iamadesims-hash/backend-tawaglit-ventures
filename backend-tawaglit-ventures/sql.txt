@@ -1,0 +1,29 @@
+-- Users
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email TEXT UNIQUE NOT NULL,
+  name TEXT,
+  role TEXT DEFAULT 'USER',
+  is_premium BOOLEAN DEFAULT false,
+  kyc_status TEXT DEFAULT 'PENDING',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Wallets
+CREATE TABLE wallets (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  total_balance DECIMAL DEFAULT 0
+);
+
+-- Transactions
+CREATE TABLE transactions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id),
+  amount DECIMAL NOT NULL,
+  currency TEXT,
+  type TEXT,
+  status TEXT DEFAULT 'PENDING',
+  reference TEXT UNIQUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
